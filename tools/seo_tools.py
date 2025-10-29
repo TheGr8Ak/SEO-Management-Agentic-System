@@ -374,62 +374,103 @@ def analyze_content(url: str) -> str:
         return f"❌ **Content Analysis Failed**\n\nError: {str(e)}"
 
 
-def check_performance(domain: str) -> str:
+def check_performance(domain: str, metric_type: str = "all") -> str:
     """
     Check website performance and rankings.
     
     Args:
         domain: Domain to check
-        
+        metric_type: Type of metrics to check ('all', 'rankings', 'traffic', 'speed')
+    
     Returns:
         Formatted text report of performance metrics
     """
     try:
-        logger.info(f"Checking performance for {domain}")
+        logger.info(f"Checking performance for {domain} - Metrics: {metric_type}")
         
-        # In a real implementation, you would:
-        # 1. Query Google Search Console API
-        # 2. Check current keyword rankings
-        # 3. Analyze traffic trends
-        # 4. Monitor backlink profile
-        
+        # Build report based on metric_type
         report = f"""📊 **Performance Monitoring Report**
 
 **Domain:** {domain}
 **Report Date:** {datetime.now().strftime('%Y-%m-%d %H:%M')}
+**Metrics Type:** {metric_type.upper()}
 
-### Performance Overview
+"""
+        
+        # Include sections based on metric_type
+        if metric_type in ["all", "rankings"]:
+            report += """### Keyword Rankings
 
-**Note:** Connect your Google Search Console account for real-time data.
+**Note:** Connect your Google Search Console account for real-time ranking data.
 
-### Key Metrics to Track
+**Priority Keywords to Track:**
+- Salesforce consulting
+- Real estate CRM
+- Salesforce implementation
+- CRM solutions India
 
-**Organic Traffic:**
-- **Current visitors/month:** Connect GSC for data
-- **Traffic trend:** Monitor weekly changes
-- **Top landing pages:** Identify best performers
+**Tracking Recommendations:**
+- Set up rank tracking in GSC
+- Monitor weekly position changes
+- Track competitor rankings
+- Focus on page 2 keywords (easier wins)
 
-**Keyword Rankings:**
-- **Keywords in top 10:** Track your priority keywords
-- **Average position:** Monitor position changes
-- **Ranking improvements:** Celebrate wins
+"""
 
-**Technical Health:**
-- **Crawl errors:** Check GSC for issues
-- **Core Web Vitals:** Monitor LCP, FID, CLS scores
-- **Mobile usability:** Ensure no mobile issues
+        if metric_type in ["all", "traffic"]:
+            report += """### Organic Traffic
 
-### Recommended Tools
+**Connect Google Analytics 4 for:**
+- Monthly visitor count
+- Traffic source breakdown
+- User engagement metrics
+- Conversion tracking
 
-1. **Google Search Console** (Free)
+**Key Metrics to Monitor:**
+- Organic sessions/month
+- Bounce rate (aim for <50%)
+- Average session duration
+- Pages per session
+- Goal completions
+
+"""
+
+        if metric_type in ["all", "speed"]:
+            report += """### Page Speed & Core Web Vitals
+
+**Test your site speed at:**
+- PageSpeed Insights (pagespeed.web.dev)
+- GTmetrix
+- WebPageTest
+
+**Core Web Vitals Standards:**
+- **LCP (Largest Contentful Paint):** <2.5s (Good)
+- **FID (First Input Delay):** <100ms (Good)
+- **CLS (Cumulative Layout Shift):** <0.1 (Good)
+
+**Speed Optimization Tips:**
+1. Compress images (use WebP format)
+2. Enable browser caching
+3. Minify CSS/JS
+4. Use a CDN
+5. Optimize server response time
+
+"""
+
+        if metric_type == "all":
+            report += """### Recommended Tools
+
+1. **Google Search Console** (Free) - PRIORITY 1
    - Set up at search.google.com/search-console
    - Submit sitemap
    - Monitor indexing status
+   - Track keyword performance
 
-2. **Google Analytics 4** (Free)
+2. **Google Analytics 4** (Free) - PRIORITY 1
    - Track user behavior
    - Set up conversion goals
    - Monitor traffic sources
+   - Analyze user journeys
 
 3. **PageSpeed Insights** (Free)
    - Test page speed
@@ -443,6 +484,7 @@ def check_performance(domain: str) -> str:
 3. ✅ **Submit XML sitemap** - PRIORITY 2
 4. ✅ **Fix technical issues** - Run technical audit
 5. ✅ **Monitor weekly** - Check metrics every Monday
+
 """
         
         return report
@@ -450,6 +492,7 @@ def check_performance(domain: str) -> str:
     except Exception as e:
         logger.error(f"Performance check error: {e}", exc_info=True)
         return f"❌ **Performance Check Failed**\n\nError: {str(e)}"
+
 
 
 def generate_seo_report(domain: str) -> str:
